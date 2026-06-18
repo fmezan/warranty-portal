@@ -1,65 +1,67 @@
+<?php
+$server = "your-server-name.database.windows.net";
+$database = "warrantydb";
+$username = "sqladminuser";
+$password = "YOUR_PASSWORD";
+
+try {
+    $conn = new PDO(
+        "sqlsrv:server=$server;Database=$database",
+        $username,
+        $password
+    );
+
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (Exception $e) {
+    die("DB Connection failed: " . $e->getMessage());
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $stmt = $conn->prepare("
+        INSERT INTO WarrantyRequests 
+        (CustomerName, Email, Address, IssueType, Description)
+        VALUES (?, ?, ?, ?, ?)
+    ");
+
+    $stmt->execute([
+        $_POST["name"],
+        $_POST["email"],
+        $_POST["address"],
+        $_POST["issue"],
+        $_POST["description"]
+    ]);
+
+    $message = "Warranty request submitted successfully!";
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Elliott Homes Warranty Portal</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            background-color: #f4f6f9;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: auto;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
-            margin-top: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,.1);
-        }
-
-        h1 {
-            color: #0066cc;
-        }
-
-        button {
-            background: #0066cc;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-        }
-    </style>
+    <title>Warranty Portal</title>
 </head>
 <body>
 
-<div class="container">
+<h1>Elliott Homes Warranty Portal</h1>
 
-    <h1>Elliott Homes Warranty Portal</h1>
+<?php if (isset($message)) echo "<p style='color:green'>$message</p>"; ?>
 
-    <div class="card">
-        <h2>Submit Warranty Request</h2>
-        <p>Report issues with your home.</p>
-        <button>Submit Request</button>
-    </div>
+<form method="POST">
+    <input name="name" placeholder="Name" required><br><br>
+    <input name="email" placeholder="Email" required><br><br>
+    <input name="address" placeholder="Address" required><br><br>
 
-    <div class="card">
-        <h2>Check Request Status</h2>
-        <p>Track existing warranty tickets.</p>
-        <button>Check Status</button>
-    </div>
+    <select name="issue">
+        <option>Plumbing</option>
+        <option>Electrical</option>
+        <option>HVAC</option>
+        <option>Structural</option>
+    </select><br><br>
 
-    <div class="card">
-        <h2>Contact Support</h2>
-        <p>Reach our customer care team.</p>
-        <button>Contact Us</button>
-    </div>
+    <textarea name="description" placeholder="Describe issue"></textarea><br><br>
 
-</div>
+    <button type="submit">Submit Request</button>
+</form>
 
 </body>
 </html>
