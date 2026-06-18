@@ -1,6 +1,6 @@
 <?php
 $server = "warranty-sql-server-elliott.database.windows.net";
-$database = "warrantydb";
+$database = "warranty-sql-server-elliott";
 $username = "fmtest";
 $password = "sqladminuser@123";
 
