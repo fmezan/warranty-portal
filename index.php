@@ -1,8 +1,8 @@
 <?php
-$server = "your-server-name.database.windows.net";
+$server = "warranty-sql-server-elliott.database.windows.net";
 $database = "warrantydb";
-$username = "sqladminuser";
-$password = "YOUR_PASSWORD";
+$username = "fmtest";
+$password = "sqladminuser@123";
 
 try {
     $conn = new PDO(
