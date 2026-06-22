@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 
-<h1>Faisal Elliott Homes Warranty Portal</h1>
+<h1>Elliott Homes Warranty Portal</h1>
 
 <?php if (isset($message)) echo "<p style='color:green'>$message</p>"; ?>
 
