@@ -1,0 +1,160 @@
+🧾 SOP: Azure Warranty Portal Project (End-to-End)
+🧱 PHASE 1 — Create GitHub Repository
+Step 1: Create repo
+Go to GitHub
+Create repository:
+warranty-portal
+Public (for lab)
+Initialize with README (optional)
+Step 2: Clone to WSL
+cd ~
+git clone https://github.com/<your-username>/warranty-portal.git
+cd warranty-portal
+Step 3: Configure Git identity (first time only)
+git config --global user.name "Your Name"
+git config --global user.email "your-email"
+🌐 PHASE 2 — Create Azure App Service
+Step 4: Create App Service
+
+Azure Portal → App Service → Create
+
+OS: Linux
+Runtime: PHP 8.3
+Plan: B1
+Region: same as DB
+Step 5: Enable GitHub Deployment
+
+App Service → Deployment Center:
+
+Source: GitHub
+Repo: warranty-portal
+Branch: main
+
+✔ This creates CI/CD pipeline automatically
+
+🧾 PHASE 3 — Build Application (PHP)
+Step 6: Create index.php
+Form fields:
+- name
+- email
+- address
+- issue
+- description
+
+Basic structure:
+
+<form method="POST">
+Step 7: Add DB connection (PDO)
+$server = "your-server.database.windows.net";
+$database = "your-db";
+$username = "your-user";
+$password = "your-password";
+Step 8: Insert logic
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $stmt = $conn->prepare("INSERT INTO WarrantyRequests (...) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([...]);
+}
+Step 9: Commit and push initial code
+git add .
+git commit -m "Initial warranty portal app"
+git push origin main
+🗄️ PHASE 4 — Create Azure SQL Database
+Step 10: Create SQL DB
+
+Azure Portal:
+
+Database: warrantyportaldatabase
+Server: new SQL server
+Step 11: Configure firewall
+
+Enable:
+
+Allow Azure services: YES
+Add client IP: YES
+Step 12: Create table
+
+Run in Query Editor:
+
+CREATE TABLE WarrantyRequests (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    CustomerName NVARCHAR(100),
+    Email NVARCHAR(100),
+    Address NVARCHAR(200),
+    IssueType NVARCHAR(50),
+    Description NVARCHAR(MAX),
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+🔗 PHASE 5 — Connect App → SQL
+Step 13: Update connection string
+
+Ensure:
+
+server = Azure SQL server
+database = correct DB name
+username = SQL user
+password = SQL password
+Step 14: Test DB insert manually (optional)
+INSERT INTO WarrantyRequests (...)
+VALUES (...)
+Step 15: Commit DB integration
+git add .
+git commit -m "Add SQL integration"
+git push origin main
+🚀 PHASE 6 — CI/CD Deployment Flow
+Step 16: Any change workflow
+
+Every update follows:
+
+git add .
+git commit -m "update message"
+git push origin main
+Step 17: Deployment pipeline
+
+After push:
+
+GitHub → Actions → Build → Deploy → Azure App Service
+🧪 PHASE 7 — Testing
+Step 18: Verify app
+
+Open:
+
+https://<your-app>.azurewebsites.net
+Step 19: Submit form test
+Fill form
+Submit
+Check DB:
+SELECT * FROM WarrantyRequests;
+🧠 PHASE 8 — Debug SOP
+If app shows 404:
+Check form action URL
+Check deployment logs
+If DB error:
+Check table exists
+Check connection string
+If CI/CD not working:
+Check GitHub Actions
+Check Deployment Center
+🔁 PHASE 9 — Daily Workflow (IMPORTANT)
+Your normal development cycle:
+1. Edit index.php in WSL
+2. git add .
+3. git commit -m "change"
+4. git push origin main
+5. Azure auto deploys
+🏁 FINAL ARCHITECTURE
+Developer (WSL)
+   ↓
+GitHub Repo
+   ↓
+GitHub Actions (CI/CD)
+   ↓
+Azure App Service (PHP)
+   ↓
+Azure SQL Database
+🔥 MASTER RULE (NEVER FORGET)
+
+You NEVER manually deploy to Azure.
+
+Everything flows through:
+
+Git push = Production deployment
